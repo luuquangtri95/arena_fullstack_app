@@ -1,5 +1,5 @@
 import CloudinaryUploader from '../connector/cloudinary/index.js'
-import Repository from './../repositories/user.js'
+import Repository from './../repositories/product.js'
 
 export default {
   count: async (req) => {
@@ -11,7 +11,7 @@ export default {
     }
   },
 
-  findAll: async (req) => {
+  find: async (req) => {
     try {
       const { page, limit } = req.query
 
@@ -39,26 +39,17 @@ export default {
     try {
       let data = { ...req.body }
 
-      if (req.files.avatar) {
-        // upload to cloudinary
-        let file = await CloudinaryUploader.upload(req.files.avatar[0])
-
-        data.avatar = file.secure_url
-      } else {
-        data.avatar = ''
-      }
-
-      if (req.files.photos) {
+      if (req.files.images) {
         // upload to cloudinary
         let files = []
-        for (let i = 0; i < req.files.photos.length; i++) {
-          let file = await CloudinaryUploader.upload(req.files.photos[i])
+        for (let i = 0; i < req.files.images.length; i++) {
+          let file = await CloudinaryUploader.upload(req.files.images[i])
           files.push(file)
         }
 
-        data.photos = files.map((item) => item.secure_url)
+        data.images = files.map((item) => item.secure_url)
       } else {
-        data.photos = []
+        data.images = []
       }
 
       return await Repository.create(data)
@@ -73,22 +64,15 @@ export default {
       const { id } = req.params
       const data = { ...req.body }
 
-      if (req.files.avatar) {
-        // upload to cloudinary
-        let file = await CloudinaryUploader.upload(req.files.avatar[0])
-
-        data.avatar = file.secure_url
-      }
-
-      if (req.files.photos) {
+      if (req.files.images) {
         // upload to cloudinary
         let files = []
-        for (let i = 0; i < req.files.photos.length; i++) {
-          let file = await CloudinaryUploader.upload(req.files.photos[i])
+        for (let i = 0; i < req.files.images.length; i++) {
+          let file = await CloudinaryUploader.upload(req.files.images[i])
           files.push(file)
         }
 
-        data.photos = files.map((item) => item.secure_url)
+        data.images = files.map((item) => item.secure_url)
       }
 
       return await Repository.update(id, data)

@@ -4,15 +4,16 @@ import Service from './../services/product.js'
 export default {
   count: async (req, res) => {
     try {
-      const data = await Service.findAll(req)
+      const data = await Service.find(req)
       return ResponseHandler.success(res, data)
     } catch (error) {
       return ResponseHandler.error(res, error)
     }
   },
 
-  findAll: async (req, res) => {
+  find: async (req, res) => {
     try {
+      const data = await Service.find(req)
       return ResponseHandler.success(res, data)
     } catch (error) {
       return ResponseHandler.error(res, error)
@@ -21,6 +22,7 @@ export default {
 
   findById: async (req, res) => {
     try {
+      const data = await Service.findById(req)
       return ResponseHandler.success(res, data)
     } catch (error) {
       return ResponseHandler.error(res, error)
@@ -29,6 +31,7 @@ export default {
 
   create: async (req, res) => {
     try {
+      const data = await Service.create(req)
       return ResponseHandler.success(res, data)
     } catch (error) {
       return ResponseHandler.error(res, error)
@@ -37,6 +40,7 @@ export default {
 
   update: async (req, res) => {
     try {
+      const data = await Service.update(req)
       return ResponseHandler.success(res, data)
     } catch (error) {
       return ResponseHandler.error(res, error)
@@ -45,7 +49,8 @@ export default {
 
   delete: async (req, res) => {
     try {
-      return ResponseHandler.success(res)
+      const data = await Service.delete(req)
+      return ResponseHandler.success(res, data)
     } catch (error) {
       return ResponseHandler.error(res, error)
     }

@@ -1,4 +1,5 @@
 import Model from '../models/product.js'
+import ModelVendor from '../models/vendor.js'
 
 export default {
   count: async () => {
@@ -15,7 +16,7 @@ export default {
       const items = await Model.findAll({
         limit,
         offset: (page - 1) * limit,
-        include,
+        include: { model: ModelVendor },
         order: [['updatedAt', 'DESC']],
       })
 
@@ -35,7 +36,7 @@ export default {
     try {
       const res = await Model.findOne({
         where: { id },
-        include,
+        include: { model: ModelVendor },
       })
       if (!res) {
         throw new Error('Not found')
@@ -49,11 +50,6 @@ export default {
 
   create: async (data) => {
     try {
-      // generate password encode
-      const salt = bcrypt.genSaltSync(10)
-      const passwordEncode = bcrypt.hashSync(data.password, salt)
-      data.password = passwordEncode
-
       return await Model.create(data)
     } catch (error) {
       throw error
@@ -64,25 +60,28 @@ export default {
     try {
       const entry = await Model.findOne({
         where: { id },
-        include,
+        include: { model: ModelVendor },
+        raw: true,
       })
+
       if (!entry) {
         throw new Error('Not found')
       }
 
-      // cannot allow update specific fields
-      delete data.role
+      const dataUpdated = {
+        ...data,
+        images: [...entry.images, ...data.images],
+      }
 
-      await Model.update(data, {
+      await Model.update(dataUpdated, {
         where: { id },
         returning: true,
         plain: true,
-        include,
+        include: { model: ModelVendor },
       })
-
       return await Model.findOne({
         where: { id },
-        include,
+        include: { model: ModelVendor },
       })
     } catch (error) {
       throw error
