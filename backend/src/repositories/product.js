@@ -1,5 +1,8 @@
+import generateSlug from '../helpers/generateSlug.js'
 import Model from '../models/product.js'
 import ModelVendor from '../models/vendor.js'
+
+const include = [{ model: ModelVendor, as: 'vendor' }]
 
 export default {
   count: async () => {
@@ -16,7 +19,7 @@ export default {
       const items = await Model.findAll({
         limit,
         offset: (page - 1) * limit,
-        include: { model: ModelVendor },
+        include,
         order: [['updatedAt', 'DESC']],
       })
 
@@ -36,7 +39,7 @@ export default {
     try {
       const res = await Model.findOne({
         where: { id },
-        include: { model: ModelVendor },
+        include,
       })
       if (!res) {
         throw new Error('Not found')
@@ -50,7 +53,11 @@ export default {
 
   create: async (data) => {
     try {
-      return await Model.create(data)
+      const dataMappingHandleField = {
+        ...data,
+        handle: generateSlug(data.title, Date.now()),
+      }
+      return await Model.create(dataMappingHandleField)
     } catch (error) {
       throw error
     }
@@ -60,7 +67,7 @@ export default {
     try {
       const entry = await Model.findOne({
         where: { id },
-        include: { model: ModelVendor },
+        include,
         raw: true,
       })
 
@@ -77,11 +84,11 @@ export default {
         where: { id },
         returning: true,
         plain: true,
-        include: { model: ModelVendor },
+        include,
       })
       return await Model.findOne({
         where: { id },
-        include: { model: ModelVendor },
+        include,
       })
     } catch (error) {
       throw error
