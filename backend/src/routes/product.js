@@ -11,7 +11,10 @@ router.get('/count', Controller.count)
 
 router.post(
   '/',
-  MulterUpload.fields([{ name: 'images', maxCount: 5 }]),
+  MulterUpload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'images', maxCount: 5 },
+  ]),
   ProductValidate.create,
   Controller.create,
 )

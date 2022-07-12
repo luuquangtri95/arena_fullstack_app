@@ -39,6 +39,15 @@ export default {
     try {
       let data = { ...req.body }
 
+      if (req.files.thumbnail) {
+        // upload to cloudinary
+        let file = await CloudinaryUploader.upload(req.files.thumbnail[0])
+
+        data.thumbnail = file.secure_url
+      } else {
+        data.thumbnail = ''
+      }
+
       if (req.files.images) {
         // upload to cloudinary
         let files = []

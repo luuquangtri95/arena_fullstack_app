@@ -57,6 +57,7 @@ export default {
         ...data,
         handle: generateSlug(data.title, Date.now()),
       }
+
       return await Model.create(dataMappingHandleField)
     } catch (error) {
       throw error
