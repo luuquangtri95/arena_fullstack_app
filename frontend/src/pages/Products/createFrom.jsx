@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Button, Card, Stack, TextField } from '@shopify/polaris'
+import { Button, Card, Key, Stack, TextField } from '@shopify/polaris'
 import { useEffect, useState } from 'react'
 import AppHeader from '../../components/AppHeader'
 import FormControl from '../../components/FormControl'
@@ -122,9 +122,9 @@ function CreateForm(props) {
 
   const handleChange = (name, value) => {
     let _formData = JSON.parse(JSON.stringify(formData))
-
-    _formData['thumbnail'] = formData['thumbnail']
-    _formData['images'] = formData['images']
+    Array.from(['thumbnail', 'images']).forEach((key) => (_formData[key] = formData[key]))
+    // _formData['thumbnail'] = formData['thumbnail']
+    // _formData['images'] = formData['images']
 
     _formData[name] = { ..._formData[name], value, error: '' }
 
