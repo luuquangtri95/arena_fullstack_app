@@ -1,0 +1,12 @@
+**/node_modules
+**/build
+**/dist
+
+**/*.env
+
+**/yarn.lock
+**/package-lock.json
+
+**/*.DS_Store
+
+backend/temp

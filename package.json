@@ -1,0 +1,19 @@
+{
+  "name": "arena-fullstack-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend/ && npm run build",
+    "serve": "cd backend/ && npm run serve",
+    "format": "npm-run-all -p format:*",
+    "format:code": "npm run prettier:code -- --write",
+    "format:other": "npm run prettier:other -- --write",
+    "prettier:code": "prettier \"**/*.{js,jsx}\"",
+    "prettier:other": "prettier \"**/*.{md,css,scss,yaml,yml,json,prettierrc}\""
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1"
+  }
+}
