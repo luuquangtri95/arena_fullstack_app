@@ -18,12 +18,14 @@ const productApi = {
   create(data) {
     const formData = new FormData()
     Object.keys(data)
-      .filter((name) => !['photos'].includes(name))
+      .filter((name) => !['images', 'thumbnail'].includes(name))
       .forEach((name) => formData.append(name, data[name]))
 
-    if (data.photos?.length) {
-      data.photos.forEach((item) => formData.append('photos', item))
+    if (data.images?.length) {
+      data.images.forEach((item) => formData.append('images', item))
     }
+
+    formData.append('thumbnail', data.thumbnail)
 
     const url = '/api/products'
     return axiosClient.post(url, formData, {

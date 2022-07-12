@@ -191,7 +191,12 @@ function CreateForm(props) {
 
   const handleChange = (name, value) => {
     let _formData = JSON.parse(JSON.stringify(formData))
+
+    _formData['avatar'] = formData['avatar']
+    _formData['photos'] = formData['photos']
+
     _formData[name] = { ..._formData[name], value, error: '' }
+
     setFormData(_formData)
   }
 

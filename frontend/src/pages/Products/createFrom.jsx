@@ -23,7 +23,7 @@ CreateForm.defaultProps = {
 const initialFormData = {
   title: {
     type: 'text',
-    label: 'title',
+    label: 'Title',
     value: '',
     error: '',
     required: true,
@@ -38,7 +38,7 @@ const initialFormData = {
 
   description: {
     type: 'text',
-    label: 'description',
+    label: 'Description',
     value: '',
     error: '',
     required: true,
@@ -50,6 +50,38 @@ const initialFormData = {
     },
   },
 
+  price: {
+    type: 'number',
+    label: 'Price',
+    value: '',
+    error: '',
+    required: true,
+    validate: {
+      trim: true,
+      required: [true, 'Required!'],
+      minlength: [2, 'Too short!'],
+      maxlength: [20, 'Too long!'],
+    },
+  },
+
+  thumbnail: {
+    type: 'file',
+    label: 'Thumbnail',
+    value: null,
+    error: '',
+    validate: {},
+    allowMultiple: false,
+  },
+
+  images: {
+    type: 'file',
+    label: 'Images Products',
+    value: [],
+    error: '',
+    validate: {},
+    allowMultiple: true,
+  },
+
   vendorId: {
     type: 'select',
     label: 'Vendor',
@@ -58,52 +90,44 @@ const initialFormData = {
     validate: {},
     options: [{ label: 'Select a vendor', value: '' }],
   },
-
-  images: {
-    type: 'file',
-    label: 'Photos',
-    value: [],
-    error: '',
-    validate: {},
-    allowMultiple: true,
-  },
 }
 
 function CreateForm(props) {
-  const { actions, created, onDiscard, onSubmit, vendor } = props
+  const { created, onDiscard, onSubmit, vendor } = props
 
   const [formData, setFormData] = useState(initialFormData)
-
-  console.log('create form >>', vendor)
+  console.log('formData :>> ', formData)
 
   useEffect(() => {
     let _formData = JSON.parse(JSON.stringify(initialFormData))
 
-    if (vendor) {
-      let vendorOptions = vendor.map((item) => ({ label: item.name, value: '' + item.id }))
+    /**
+     * test
+     */
+    _formData.title.value = 'iphone 12 promax' + Date.now()
+    _formData.description.value = 'pham'
+    _formData.price.value = 12345
+    _formData.vendorId.value = '1'
+
+    if (vendor.length) {
+      let vendorOptions = vendor.map((item) => ({ label: item.name, value: String(item.id) }))
+
       vendorOptions.unshift({ label: 'Select a vendor', value: '' })
 
       _formData.vendorId = { ..._formData.vendorId, options: vendorOptions }
     }
-
-    // if (created.id) {
-    //   Array.from(['firstName', 'lastName', 'username', 'email', 'birthday', 'countryId']).map(
-    //     (key) => (_formData[key] = { ..._formData[key], value: String(created[key] || '') }),
-    //   )
-    //   Array.from(['gender']).map(
-    //     (key) => (_formData[key] = { ..._formData[key], value: Boolean(created[key] || '') }),
-    //   )
-
-    //   delete _formData.password
-    //   delete _formData.confirmPassword
-    // }
 
     setFormData(_formData)
   }, [])
 
   const handleChange = (name, value) => {
     let _formData = JSON.parse(JSON.stringify(formData))
+
+    _formData['thumbnail'] = formData['thumbnail']
+    _formData['images'] = formData['images']
+
     _formData[name] = { ..._formData[name], value, error: '' }
+
     setFormData(_formData)
   }
 
@@ -112,8 +136,19 @@ function CreateForm(props) {
       const { valid, data } = FormValidate.validateForm(formData)
 
       if (valid) {
-        // validate password and confirmPassword matched
-        onSubmit(data)
+        data['images'].value = formData['images'].value
+        data['thumbnail'].value = formData['thumbnail'].value
+
+        const mapData = {
+          title: data.title.value,
+          description: data.description.value,
+          handle: data.title.value,
+          price: +data.price.value,
+          thumbnail: data.thumbnail.value,
+          images: data.images.value,
+        }
+
+        onSubmit(mapData)
       } else {
         setFormData(data)
 
@@ -121,7 +156,6 @@ function CreateForm(props) {
       }
     } catch (error) {
       console.log(error)
-      actions.showNotify({ error: true, message: error.message })
     }
   }
 
@@ -156,6 +190,23 @@ function CreateForm(props) {
               <Stack>
                 <Stack.Item fill>
                   <FormControl
+                    {...formData['price']}
+                    onChange={(value) => handleChange('price', value)}
+                  />
+                </Stack.Item>
+                <Stack.Item fill>
+                  <FormControl
+                    {...formData['price']}
+                    onChange={(value) => handleChange('price', value)}
+                  />
+                </Stack.Item>
+              </Stack>
+            </Stack.Item>
+
+            <Stack.Item>
+              <Stack>
+                <Stack.Item fill>
+                  <FormControl
                     {...formData['vendorId']}
                     onChange={(value) => handleChange('vendorId', value)}
                   />
@@ -163,12 +214,19 @@ function CreateForm(props) {
                 <Stack.Item fill></Stack.Item>
               </Stack>
             </Stack.Item>
+
             <Stack.Item>
               <Stack>
                 <Stack.Item fill>
                   <FormControl
-                    {...formData['photos']}
-                    onChange={(value) => handleChange('photos', value)}
+                    {...formData['thumbnail']}
+                    onChange={(value) => handleChange('thumbnail', value)}
+                  />
+                </Stack.Item>
+                <Stack.Item fill>
+                  <FormControl
+                    {...formData['images']}
+                    onChange={(value) => handleChange('images', value)}
                   />
                 </Stack.Item>
               </Stack>

@@ -6,7 +6,8 @@ import vendorApi from '../../api/vendor'
 import AppHeader from '../../components/AppHeader'
 import MyPagination from '../../components/MyPagination'
 import CreateForm from './createFrom'
-import Table from '../Users/Table'
+import Table from '../Products/Table'
+import ConfirmDelete from '../Products/ConfirmDelete'
 
 function ProductsPage(props) {
   const [filters, setFilter] = useState({
@@ -24,25 +25,28 @@ function ProductsPage(props) {
 
   const [created, setCreated] = useState(null)
   const [vendor, setVendor] = useState(null)
+  const [deleted, setDeleted] = useState(null)
+
+  const getProductList = async () => {
+    try {
+      const res = await productApi.find({ page: filters._page, limit: filters._limit })
+      const { items, limit, page, totalItems, totalPages } = res.data
+
+      setProductList(items)
+      setPagination((prevState) => ({
+        ...prevState,
+        limit,
+        page,
+        totalItems,
+        totalPages,
+      }))
+    } catch (error) {
+      console.log('fetch to fail', error.message)
+    }
+  }
 
   useEffect(() => {
-    ;(async () => {
-      try {
-        const res = await productApi.find({ page: filters._page, limit: filters._limit })
-        const { items, limit, page, totalItems, totalPages } = res.data
-
-        setProductList(items)
-        setPagination((prevState) => ({
-          ...prevState,
-          limit,
-          page,
-          totalItems,
-          totalPages,
-        }))
-      } catch (error) {
-        console.log('fetch to fail', error.message)
-      }
-    })()
+    getProductList({})
   }, [filters])
 
   useEffect(() => {
@@ -58,7 +62,34 @@ function ProductsPage(props) {
     })()
   }, [])
 
-  const handleSubmit = (formData) => {}
+  const handleSubmit = async (formData) => {
+    try {
+      let res = await productApi.create(formData)
+
+      if (!res.success) {
+        throw res.error
+      }
+
+      setCreated(null)
+      getProductList([])
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      let res = await productApi._delete(deleted.id)
+
+      if (!res.success) {
+        throw res.error
+      }
+      setDeleted(null)
+      getProductList({ page: filters._page, limit: filters._limit })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   if (created) {
     return (
@@ -96,10 +127,20 @@ function ProductsPage(props) {
                     Total items: <b>{pagination.totalItems}</b>
                   </div>
                 </Stack.Item>
+                <Stack.Item>
+                  <Table
+                    {...props}
+                    productList={productList}
+                    onEdit={(item) => setCreated(item)}
+                    onDelete={(item) => setDeleted(item)}
+                  />
+                </Stack.Item>
               </Stack>
             </Card>
           </Stack.Item>
         </Stack>
+
+        {deleted && <ConfirmDelete onDiscard={() => setDeleted(null)} onSubmit={handleDelete} />}
       </>
     </div>
   )
