@@ -20,7 +20,13 @@ const generateSlug = (value, length) => {
         .replace(/---+/g, '-')
         .replace(/--+/g, '-')
 
-      return slug
+      const resultSlug = `${slug}-${Date.now()}`
+
+      if (resultSlug.length > 100) {
+        return resultSlug.slice(0, 101)
+      }
+
+      return resultSlug
     }
 
     return ''
