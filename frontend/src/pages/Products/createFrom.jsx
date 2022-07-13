@@ -63,6 +63,27 @@ const initialFormData = {
       maxlength: [20, 'Too long!'],
     },
   },
+  status: {
+    type: 'select',
+    label: 'Status',
+    value: '',
+    error: '',
+    validate: {},
+    options: [
+      {
+        label: 'ACTIVE',
+        value: 'ACTIVE',
+      },
+      {
+        label: 'DRAFT',
+        value: 'DRAFT',
+      },
+      {
+        label: 'ARCHIVED',
+        value: 'ARCHIVED',
+      },
+    ],
+  },
 
   thumbnail: {
     type: 'file',
@@ -94,9 +115,10 @@ const initialFormData = {
 
 function CreateForm(props) {
   const { created, onDiscard, onSubmit, vendor } = props
+  console.log('created :>> ', created)
 
   const [formData, setFormData] = useState(initialFormData)
-  console.log('formData :>> ', formData)
+  console.log('created :>> ', created)
 
   useEffect(() => {
     let _formData = JSON.parse(JSON.stringify(initialFormData))
@@ -104,10 +126,10 @@ function CreateForm(props) {
     /**
      * test
      */
-    _formData.title.value = 'iphone 12 promax' + Date.now()
-    _formData.description.value = 'pham'
-    _formData.price.value = 12345
-    _formData.vendorId.value = '1'
+    // _formData.title.value = 'iphone 12 promax' + Date.now()
+    // _formData.description.value = 'pham'
+    // _formData.price.value = 12345
+    // _formData.vendorId.value = '1'
 
     if (vendor.length) {
       let vendorOptions = vendor.map((item) => ({ label: item.name, value: String(item.id) }))
@@ -117,14 +139,22 @@ function CreateForm(props) {
       _formData.vendorId = { ..._formData.vendorId, options: vendorOptions }
     }
 
+    if (created.id) {
+      Array.from(['title', 'description', 'price', 'vendorId', 'status']).map(
+        (key) => (_formData[key] = { ..._formData[key], value: String(created[key] || '') }),
+      )
+
+      Array.from(['thumbnail', 'images']).map(
+        (key) => (_formData[key] = { ..._formData[key], value: created[key] }),
+      )
+    }
+
     setFormData(_formData)
   }, [])
 
   const handleChange = (name, value) => {
     let _formData = JSON.parse(JSON.stringify(formData))
     Array.from(['thumbnail', 'images']).forEach((key) => (_formData[key] = formData[key]))
-    // _formData['thumbnail'] = formData['thumbnail']
-    // _formData['images'] = formData['images']
 
     _formData[name] = { ..._formData[name], value, error: '' }
 
@@ -144,8 +174,9 @@ function CreateForm(props) {
           description: data.description.value,
           handle: data.title.value,
           price: +data.price.value,
-          thumbnail: data.thumbnail.value,
-          images: data.images.value,
+          thumbnail: data.thumbnail.value || 'https://placeholder.com/300.png',
+          images: data.images.value || [],
+          vendorId: data.vendorId.value,
         }
 
         onSubmit(mapData)
@@ -179,6 +210,17 @@ function CreateForm(props) {
 
                 <Stack.Item fill>
                   <FormControl
+                    {...formData['price']}
+                    onChange={(value) => handleChange('price', value)}
+                  />
+                </Stack.Item>
+              </Stack>
+            </Stack.Item>
+
+            <Stack.Item>
+              <Stack>
+                <Stack.Item fill>
+                  <FormControl
                     {...formData['description']}
                     onChange={(value) => handleChange('description', value)}
                   />
@@ -190,28 +232,16 @@ function CreateForm(props) {
               <Stack>
                 <Stack.Item fill>
                   <FormControl
-                    {...formData['price']}
-                    onChange={(value) => handleChange('price', value)}
+                    {...formData['status']}
+                    onChange={(value) => handleChange('status', value)}
                   />
                 </Stack.Item>
-                <Stack.Item fill>
-                  <FormControl
-                    {...formData['price']}
-                    onChange={(value) => handleChange('price', value)}
-                  />
-                </Stack.Item>
-              </Stack>
-            </Stack.Item>
-
-            <Stack.Item>
-              <Stack>
                 <Stack.Item fill>
                   <FormControl
                     {...formData['vendorId']}
                     onChange={(value) => handleChange('vendorId', value)}
                   />
                 </Stack.Item>
-                <Stack.Item fill></Stack.Item>
               </Stack>
             </Stack.Item>
 

@@ -64,7 +64,15 @@ function ProductsPage(props) {
 
   const handleSubmit = async (formData) => {
     try {
-      let res = await productApi.create(formData)
+      let res = null
+      if (created?.id) {
+        // mode update
+
+        res = await productApi.update(created.id, formData)
+      } else {
+        // mode create
+        res = await productApi.create(formData)
+      }
 
       if (!res.success) {
         throw res.error
