@@ -21,7 +21,10 @@ router.post(
 
 router.put(
   '/:id',
-  MulterUpload.fields([{ name: 'images', maxCount: 5 }]),
+  MulterUpload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'images', maxCount: 5 },
+  ]),
   ProductValidate.update,
   Controller.update,
 )

@@ -79,6 +79,7 @@ export default {
       const dataUpdated = {
         ...data,
         images: [...entry.images, ...data.images],
+        thumbnail: data.thumbnail,
       }
 
       await Model.update(dataUpdated, {
