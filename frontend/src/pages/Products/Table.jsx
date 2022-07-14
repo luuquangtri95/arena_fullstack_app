@@ -53,6 +53,7 @@ function Table(props) {
         <Stack.Item>Title: {item?.title}</Stack.Item>
         <Stack.Item>description: {item?.description}</Stack.Item>
         <Stack.Item>Price: {item?.price}</Stack.Item>
+        <Stack.Item>url SEO: {item?.handle}</Stack.Item>
       </Stack>,
 
       <Popover
