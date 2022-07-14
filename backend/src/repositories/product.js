@@ -71,18 +71,10 @@ export default {
         include,
         raw: true,
       })
-
       if (!entry) {
         throw new Error('Not found')
       }
-
-      const dataUpdated = {
-        ...data,
-        images: [...entry.images, ...data.images],
-        thumbnail: data.thumbnail,
-      }
-
-      await Model.update(dataUpdated, {
+      await Model.update(data, {
         where: { id },
         returning: true,
         plain: true,

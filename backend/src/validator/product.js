@@ -55,7 +55,6 @@ export default {
   update: async (req, res, next) => {
     try {
       await updateSchema.validateAsync(req.body)
-
       next()
     } catch (error) {
       return ResponseHandler.error(res, error)
