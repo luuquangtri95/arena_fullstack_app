@@ -56,7 +56,7 @@ function MyPagination(props) {
         >
           <ActionList
             actionRole="menuitem"
-            items={[10, 20, 50, 100].map((item) => ({
+            items={[5, 10, 20, 50, 100].map((item) => ({
               content: item,
               onAction: () => {
                 setLimit(item)

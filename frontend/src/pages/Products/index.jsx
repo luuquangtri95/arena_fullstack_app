@@ -45,6 +45,14 @@ function ProductsPage(props) {
     }
   }
 
+  const handlePageChange = (page, limit) => {
+    setFilter((prevState) => ({
+      ...prevState,
+      _page: page,
+      _limit: limit,
+    }))
+  }
+
   useEffect(() => {
     getProductList({})
   }, [filters])
@@ -141,6 +149,14 @@ function ProductsPage(props) {
                     productList={productList}
                     onEdit={(item) => setCreated(item)}
                     onDelete={(item) => setDeleted(item)}
+                  />
+                </Stack.Item>
+                <Stack.Item>
+                  <MyPagination
+                    page={pagination.page}
+                    limit={pagination.limit}
+                    totalPages={pagination.totalPages}
+                    onChange={({ page, limit }) => handlePageChange(page, limit)}
                   />
                 </Stack.Item>
               </Stack>
