@@ -66,6 +66,11 @@ export default {
 
   update: async (id, data) => {
     try {
+      const dataMappingHandleField = {
+        ...data,
+        handle: generateSlug(data.title, Date.now()),
+      }
+
       const entry = await Model.findOne({
         where: { id },
         include,
@@ -74,7 +79,7 @@ export default {
       if (!entry) {
         throw new Error('Not found')
       }
-      await Model.update(data, {
+      await Model.update(dataMappingHandleField, {
         where: { id },
         returning: true,
         plain: true,
