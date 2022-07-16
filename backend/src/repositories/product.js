@@ -1,6 +1,7 @@
 import generateSlug from '../helpers/generateSlug.js'
 import Model from '../models/product.js'
 import ModelVendor from '../models/vendor.js'
+import { Op } from 'sequelize'
 
 const include = [{ model: ModelVendor, as: 'vendor' }]
 
@@ -13,10 +14,25 @@ export default {
     }
   },
 
-  find: async ({ page, limit }) => {
+  find: async ({ page, limit, q, status }) => {
     try {
       const count = await Model.count()
       const items = await Model.findAll({
+        where: {
+          [Op.or]: [
+            {
+              title: {
+                [Op.like]: `%${q}%`,
+              },
+            },
+            {
+              description: {
+                [Op.like]: `%${q}%`,
+              },
+            },
+          ],
+          [Op.and]: [{ status: status }],
+        },
         limit,
         offset: (page - 1) * limit,
         include,
