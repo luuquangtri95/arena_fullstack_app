@@ -13,7 +13,8 @@ function ProductsPage(props) {
   const [filters, setFilter] = useState({
     _page: 1,
     _limit: 5,
-    search: '',
+    _q: '',
+    _status: 'ACTIVE',
   })
   const [productList, setProductList] = useState([])
   const [pagination, setPagination] = useState({
@@ -29,7 +30,12 @@ function ProductsPage(props) {
 
   const getProductList = async () => {
     try {
-      const res = await productApi.find({ page: filters._page, limit: filters._limit })
+      const res = await productApi.find({
+        page: filters._page,
+        limit: filters._limit,
+        q: filters._q,
+        status: filters._status,
+      })
       const { items, limit, page, totalItems, totalPages } = res.data
 
       setProductList(items)
