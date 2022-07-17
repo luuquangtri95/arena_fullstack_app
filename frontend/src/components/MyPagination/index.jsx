@@ -12,7 +12,7 @@ MyPagination.propTypes = {
 
 MyPagination.defaultProps = {
   page: 1,
-  limit: 20,
+  limit: 5,
   totalPages: 0,
   onChange: () => null,
 }

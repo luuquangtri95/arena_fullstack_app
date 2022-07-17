@@ -1,18 +1,19 @@
 import { Card, Stack } from '@shopify/polaris'
-import { useEffect } from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import productApi from '../../api/productApi'
 import vendorApi from '../../api/vendor'
 import AppHeader from '../../components/AppHeader'
 import MyPagination from '../../components/MyPagination'
-import CreateForm from './createFrom'
-import Table from '../Products/Table'
 import ConfirmDelete from '../Products/ConfirmDelete'
+import Table from '../Products/Table'
+import CreateForm from './createFrom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 function ProductsPage(props) {
+  // Todo:  state
   const [filters, setFilter] = useState({
     _page: 1,
-    _limit: 5,
+    _limit: 2,
     _q: '',
     _status: 'ACTIVE',
   })
@@ -23,19 +24,35 @@ function ProductsPage(props) {
     totalItems: 1,
     totalPages: 1,
   })
-
   const [created, setCreated] = useState(null)
   const [vendor, setVendor] = useState(null)
   const [deleted, setDeleted] = useState(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
+
+  useEffect(() => {
+    const queryParams = {
+      page: filters._page,
+      limit: filters._limit,
+      q: filters._q,
+      status: filters._status,
+    }
+
+    setSearchParams(queryParams)
+  }, [])
 
   const getProductList = async () => {
     try {
-      const res = await productApi.find({
+      const queryParams = {
         page: filters._page,
         limit: filters._limit,
         q: filters._q,
         status: filters._status,
-      })
+      }
+
+      console.log('queryParams', queryParams)
+
+      const res = await productApi.find(queryParams)
       const { items, limit, page, totalItems, totalPages } = res.data
 
       setProductList(items)
@@ -55,7 +72,6 @@ function ProductsPage(props) {
     setFilter((prevState) => ({
       ...prevState,
       _page: page,
-      _limit: limit,
     }))
   }
 
