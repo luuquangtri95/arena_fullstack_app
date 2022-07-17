@@ -11,24 +11,35 @@ import { useLocation, useSearchParams } from 'react-router-dom'
 
 function ProductsPage(props) {
   // Todo:  state
-  const [filters, setFilter] = useState({
-    _page: 1,
-    _limit: 2,
-    _q: '',
-    _status: 'ACTIVE',
-  })
+  const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
   const [productList, setProductList] = useState([])
+  const [created, setCreated] = useState(null)
+  const [vendor, setVendor] = useState(null)
+  const [deleted, setDeleted] = useState(null)
+  const [filters, setFilter] = useState(() => {
+    if (location.search) {
+      return {
+        _page: +searchParams.get('page') || 1,
+        _limit: 2,
+        _q: searchParams.get('q') || '',
+        _status: searchParams.get('status') || 'ACTIVE',
+      }
+    } else {
+      return {
+        _page: 1,
+        _limit: 2,
+        _q: '',
+        _status: 'ACTIVE',
+      }
+    }
+  })
   const [pagination, setPagination] = useState({
     limit: 5,
     page: 1,
     totalItems: 1,
     totalPages: 1,
   })
-  const [created, setCreated] = useState(null)
-  const [vendor, setVendor] = useState(null)
-  const [deleted, setDeleted] = useState(null)
-  const [searchParams, setSearchParams] = useSearchParams()
-  const location = useLocation()
 
   useEffect(() => {
     const queryParams = {
@@ -39,7 +50,7 @@ function ProductsPage(props) {
     }
 
     setSearchParams(queryParams)
-  }, [])
+  }, [location.search])
 
   const getProductList = async () => {
     try {
@@ -49,8 +60,6 @@ function ProductsPage(props) {
         q: filters._q,
         status: filters._status,
       }
-
-      console.log('queryParams', queryParams)
 
       const res = await productApi.find(queryParams)
       const { items, limit, page, totalItems, totalPages } = res.data
@@ -73,6 +82,7 @@ function ProductsPage(props) {
       ...prevState,
       _page: page,
     }))
+    setSearchParams('page', page)
   }
 
   useEffect(() => {
@@ -175,7 +185,7 @@ function ProductsPage(props) {
                 </Stack.Item>
                 <Stack.Item>
                   <MyPagination
-                    page={pagination.page}
+                    page={filters._page || 1}
                     limit={pagination.limit}
                     totalPages={pagination.totalPages}
                     onChange={({ page, limit }) => handlePageChange(page, limit)}
