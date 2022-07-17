@@ -31,7 +31,14 @@ export default {
               },
             },
           ],
-          [Op.and]: [{ status: status }],
+          [Op.and]: [
+            { status: status },
+            // {
+            //   price: {
+            //     [Op.between]: [100000, 500000],
+            //   },
+            // },
+          ],
         },
         limit,
         offset: (page - 1) * limit,
