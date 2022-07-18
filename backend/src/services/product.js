@@ -13,12 +13,12 @@ export default {
 
   find: async (req) => {
     try {
-      const { page, limit, q, status } = req.query
+      const { page, limit, ...rest } = req.query
 
       let _page = parseInt(page) >= 1 ? parseInt(page) : 1
       let _limit = parseInt(limit) >= 0 ? parseInt(limit) : 20
 
-      return await Repository.find({ page: _page, limit: _limit, q, status })
+      return await Repository.find({ page: _page, limit: _limit, rest })
     } catch (error) {
       console.log(error)
       throw error
