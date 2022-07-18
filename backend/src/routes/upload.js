@@ -11,15 +11,13 @@ router.post('/', MulterUpload.fields([{ name: 'images', maxCount: 10 }]), async 
 
     if (req.files.images) {
       // upload to cloudinary
-
-      let files = []
       for (let i = 0; i < req.files.images.length; i++) {
         let file = await CloudinaryUploader.upload(req.files.images[i])
 
-        files.push(file)
+        images.push(file)
       }
 
-      images = files.map((item) => item.secure_url)
+      images = images.map((item) => item.secure_url)
     } else {
       images = []
     }
