@@ -115,10 +115,7 @@ const initialFormData = {
 
 function CreateForm(props) {
   const { created, onDiscard, onSubmit, vendor } = props
-  console.log('created :>> ', created)
-
   const [formData, setFormData] = useState(initialFormData)
-  console.log('created :>> ', created)
 
   useEffect(() => {
     let _formData = JSON.parse(JSON.stringify(initialFormData))
@@ -174,8 +171,9 @@ function CreateForm(props) {
           description: data.description.value,
           handle: data.title.value,
           price: +data.price.value,
-          thumbnail: data.thumbnail.value || 'https://placeholder.com/300.png',
+          thumbnail: data.thumbnail.value,
           images: data.images.value || [],
+          status: data.status.value || 'ACTIVE',
           vendorId: data.vendorId.value,
         }
 

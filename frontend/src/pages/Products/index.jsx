@@ -8,6 +8,7 @@ import ConfirmDelete from '../Products/ConfirmDelete'
 import Table from '../Products/Table'
 import CreateForm from './createFrom'
 import { useLocation, useSearchParams } from 'react-router-dom'
+import uploadApi from '../../api/uploadApi'
 
 function ProductsPage(props) {
   // Todo:  state
@@ -107,17 +108,27 @@ function ProductsPage(props) {
       let res = null
       if (created?.id) {
         // mode update
-
         res = await productApi.update(created.id, formData)
       } else {
         // mode create
+        if (formData.images?.length > 0) {
+          let response = await uploadApi.upload(formData.images)
+
+          formData.images = [...response.data.images]
+        }
+
+        if (formData?.thumbnail) {
+          let response = await uploadApi.upload(formData.thumbnail)
+
+          formData.thumbnail = response.data.images[0]
+        }
+
         res = await productApi.create(formData)
       }
 
       if (!res.success) {
         throw res.error
       }
-
       setCreated(null)
       getProductList([])
     } catch (error) {
