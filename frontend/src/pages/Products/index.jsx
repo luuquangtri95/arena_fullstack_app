@@ -9,32 +9,25 @@ import Table from '../Products/Table'
 import CreateForm from './createFrom'
 import { useLocation, useSearchParams } from 'react-router-dom'
 import uploadApi from '../../api/uploadApi'
+import ProductFilterList from './ProductFilterList'
+import queryString from 'query-string'
 
 function ProductsPage(props) {
   // Todo:  state
   const [searchParams, setSearchParams] = useSearchParams()
   const location = useLocation()
+  const queryParams = queryString.parse(location.search)
+  console.log('queryParams', queryParams)
   const [productList, setProductList] = useState([])
   const [created, setCreated] = useState(null)
   const [vendor, setVendor] = useState(null)
   const [deleted, setDeleted] = useState(null)
-  const [filters, setFilter] = useState(() => {
-    if (location.search) {
-      return {
-        _page: +searchParams.get('page') || 1,
-        _limit: 2,
-        _q: searchParams.get('q') || '',
-        _status: searchParams.get('status') || 'ACTIVE',
-      }
-    } else {
-      return {
-        _page: 1,
-        _limit: 2,
-        _q: '',
-        _status: 'ACTIVE',
-      }
-    }
-  })
+  const [filters, setFilters] = useState(() => ({
+    ...queryParams,
+    page: Number.parseInt(queryParams.page) || 1,
+    limit: Number.parseInt(queryParams.limit) || 2,
+  }))
+
   const [pagination, setPagination] = useState({
     limit: 5,
     page: 1,
@@ -43,26 +36,12 @@ function ProductsPage(props) {
   })
 
   useEffect(() => {
-    const queryParams = {
-      page: filters._page,
-      limit: filters._limit,
-      q: filters._q,
-      status: filters._status,
-    }
-
-    setSearchParams(queryParams)
+    setSearchParams(filters)
   }, [location.search])
 
   const getProductList = async () => {
     try {
-      const queryParams = {
-        page: filters._page,
-        limit: filters._limit,
-        q: filters._q,
-        status: filters._status,
-      }
-
-      const res = await productApi.find(queryParams)
+      const res = await productApi.find(filters)
       const { items, limit, page, totalItems, totalPages } = res.data
 
       setProductList(items)
@@ -79,16 +58,16 @@ function ProductsPage(props) {
   }
 
   const handlePageChange = (page, limit) => {
-    setFilter((prevState) => ({
+    setFilters((prevState) => ({
       ...prevState,
-      _page: page,
+      page: page,
     }))
     setSearchParams('page', page)
   }
 
   useEffect(() => {
     getProductList({})
-  }, [filters])
+  }, [filters, location.search])
 
   useEffect(() => {
     ;(async () => {
@@ -102,6 +81,19 @@ function ProductsPage(props) {
       }
     })()
   }, [])
+
+  const handleFilterChange = (newFilter) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      status: newFilter.status,
+    }))
+
+    setSearchParams(newFilter)
+    setPagination((prevState) => ({
+      ...prevState,
+      page: 1,
+    }))
+  }
 
   const handleSubmit = async (formData) => {
     try {
@@ -178,6 +170,11 @@ function ProductsPage(props) {
               ]}
             />
           </Stack.Item>
+
+          <Stack.Item>
+            <ProductFilterList filters={filters} onChange={handleFilterChange} />
+          </Stack.Item>
+
           <Stack.Item>
             <Card sectioned>
               <Stack vertical fill>
@@ -186,6 +183,7 @@ function ProductsPage(props) {
                     Total items: <b>{pagination.totalItems}</b>
                   </div>
                 </Stack.Item>
+
                 <Stack.Item>
                   <Table
                     {...props}
@@ -194,9 +192,10 @@ function ProductsPage(props) {
                     onDelete={(item) => setDeleted(item)}
                   />
                 </Stack.Item>
+
                 <Stack.Item>
                   <MyPagination
-                    page={filters._page || 1}
+                    page={+filters.page}
                     limit={pagination.limit}
                     totalPages={pagination.totalPages}
                     onChange={({ page, limit }) => handlePageChange(page, limit)}
