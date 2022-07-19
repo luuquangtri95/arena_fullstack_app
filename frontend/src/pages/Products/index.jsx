@@ -11,6 +11,7 @@ import { useLocation, useSearchParams } from 'react-router-dom'
 import uploadApi from '../../api/uploadApi'
 import ProductFilterList from './ProductFilterList'
 import queryString from 'query-string'
+import ProductSearch from './ProductSearch'
 
 function ProductsPage(props) {
   // Todo:  state
@@ -85,7 +86,7 @@ function ProductsPage(props) {
   const handleFilterChange = (newFilter) => {
     setFilters((prevState) => ({
       ...prevState,
-      status: newFilter.status,
+      ...newFilter,
     }))
 
     setSearchParams(newFilter)
@@ -136,7 +137,7 @@ function ProductsPage(props) {
         throw res.error
       }
       setDeleted(null)
-      getProductList({ page: filters._page, limit: filters._limit })
+      getProductList({ page: filters.page, limit: filters.limit })
     } catch (error) {
       console.log(error)
     }
@@ -163,12 +164,15 @@ function ProductsPage(props) {
               title="Products"
               actions={[
                 {
-                  label: 'Add user',
+                  label: 'Add new product',
                   primary: true,
                   onClick: () => setCreated({}),
                 },
               ]}
             />
+          </Stack.Item>
+          <Stack.Item>
+            <ProductSearch filters={filters} onChange={handleFilterChange} />
           </Stack.Item>
 
           <Stack.Item>

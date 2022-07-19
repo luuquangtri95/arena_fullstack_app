@@ -6,7 +6,7 @@ function FilterByStatus({ onChange = null, filters }) {
   const [selected, setSeleted] = useState(filters.status)
 
   const options = [
-    { label: 'Select status', value: '' },
+    { label: 'ALL', value: '' },
     { label: 'ACTIVE', value: 'ACTIVE' },
     { label: 'DRAFT', value: 'DRAFT' },
     { label: 'ARCHIVED', value: 'ARCHIVED' },

@@ -1,16 +1,7 @@
-import {
-  ActionList,
-  Button,
-  Checkbox,
-  DataTable,
-  Popover,
-  Stack,
-  Thumbnail,
-} from '@shopify/polaris'
+import { ActionList, Button, DataTable, Popover, Stack, Thumbnail } from '@shopify/polaris'
 import { MobileVerticalDotsMajor } from '@shopify/polaris-icons'
 import { useState } from 'react'
 import Avatar from '../../components/Avatar/index.jsx'
-import formatDateTime from '../../helpers/formatDateTime.js'
 
 function Table(props) {
   const { productList, onEdit, onDelete } = props
@@ -54,6 +45,8 @@ function Table(props) {
         <Stack.Item>description: {item?.description}</Stack.Item>
         <Stack.Item>Price: {item?.price}</Stack.Item>
         <Stack.Item>url SEO: {item?.handle}</Stack.Item>
+        <Stack.Item>vendor: {item?.vendor.name}</Stack.Item>
+        <Stack.Item>status: {item?.status}</Stack.Item>
       </Stack>,
 
       <Popover
