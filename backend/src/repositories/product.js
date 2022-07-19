@@ -16,32 +16,56 @@ export default {
 
   find: async ({ page, limit, rest }) => {
     try {
-      const count = await Model.count()
       let items = []
+      let count = 0
 
-      if (Object.keys(rest).length > 0) {
-        items = await Model.findAll({
-          where: {
-            status: rest.status,
-            // [Op.or]: [
-            //   {
-            //     title: {
-            //       [Op.like]: `%${rest.q}%`,
-            //     },
-            //   },
-            //   {
-            //     description: {
-            //       [Op.like]: `%${rest.q}%`,
-            //     },
-            //   },
-            // ],
+      let _where = {}
+
+      if (rest.status) {
+        _where.status = rest.status
+      }
+
+      if (rest.q) {
+        _where = {
+          [Op.or]: [
+            {
+              title: {
+                [Op.like]: `%${rest.q}%`,
+              },
+            },
+            {
+              description: {
+                [Op.like]: `%${rest.q}%`,
+              },
+            },
+          ],
+        }
+      }
+
+      if (rest.vendorId) {
+        _where.vendorId = rest.vendorId
+      }
+
+      if (rest.price) {
+        _where = {
+          price: {
+            [Op.between]: rest.price,
           },
+        }
+      }
+      if (Object.keys(rest).length > 0) {
+        count = await Model.count({
+          where: _where,
+        })
+        items = await Model.findAll({
+          where: _where,
           limit,
           offset: (page - 1) * limit,
           include,
           order: [['updatedAt', 'DESC']],
         })
       } else {
+        count = await Model.count()
         items = await Model.findAll({
           limit,
           offset: (page - 1) * limit,
