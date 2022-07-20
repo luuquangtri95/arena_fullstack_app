@@ -46,13 +46,14 @@ export default {
         _where.vendorId = rest.vendorId
       }
 
-      if (rest.price) {
-        _where = {
-          price: {
-            [Op.between]: rest.price,
-          },
+      if (rest.price_gte && rest.price_lte) {
+        _where.price = {
+          [Op.gte]: rest.price_gte,
+          [Op.lte]: rest.price_lte,
         }
       }
+
+      console.log('_where', _where)
       if (Object.keys(rest).length > 0) {
         count = await Model.count({
           where: _where,

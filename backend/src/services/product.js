@@ -18,6 +18,8 @@ export default {
       let _page = parseInt(page) >= 1 ? parseInt(page) : 1
       let _limit = parseInt(limit) >= 0 ? parseInt(limit) : 20
 
+      console.log('rest', rest)
+
       return await Repository.find({ page: _page, limit: _limit, rest })
     } catch (error) {
       console.log(error)
