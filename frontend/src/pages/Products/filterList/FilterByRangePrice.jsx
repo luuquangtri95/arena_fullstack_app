@@ -47,7 +47,7 @@ function FilterByRangePrice({ onChange = null, filters = {} }) {
     intermediateTextFieldValue[1] === rangeValue[1] ? rangeValue[1] : intermediateTextFieldValue[1]
 
   const handleSubmit = () => {
-    onChange({ price: rangeValue })
+    onChange({ price_gte: rangeValue[0], price_lte: rangeValue[1] })
   }
 
   return (
