@@ -1,6 +1,6 @@
-import { Stack, Navigation } from '@shopify/polaris'
+import { Navigation, Stack } from '@shopify/polaris'
+import { CustomersMinor, HomeMinor, ProductsMinor } from '@shopify/polaris-icons'
 import { useLocation } from 'react-router-dom'
-import { HomeMinor, CustomersMinor, ProductsMinor } from '@shopify/polaris-icons'
 import routes from '../../routes'
 
 function Layout(props) {

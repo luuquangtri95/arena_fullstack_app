@@ -19,12 +19,20 @@ function ProductSearch({ filters = {}, onChange = null }) {
     }, 500)
   }
 
+  const handleClearButtonClick = () => {
+    setSearch('')
+
+    onChange({ q: '' })
+  }
+
   return (
     <TextField
       label="Search by title or description"
       value={search}
       onChange={(value) => handleCSearchWithDebounce(value)}
+      onClearButtonClick={handleClearButtonClick}
       autoComplete="off"
+      clearButton
     />
   )
 }

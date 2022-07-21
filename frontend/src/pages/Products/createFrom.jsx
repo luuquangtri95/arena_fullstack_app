@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types'
-import { Button, Card, Key, Stack, TextField } from '@shopify/polaris'
+import { Button, Card, Grid, Icon, Key, Page, Stack, TextField } from '@shopify/polaris'
 import { useEffect, useState } from 'react'
 import AppHeader from '../../components/AppHeader'
 import FormControl from '../../components/FormControl'
 import FormValidate from '../../helpers/formValidate'
 import MyDropZone from '../../components/MyDropZoneSingle'
+import { CircleCancelMajor } from '@shopify/polaris-icons'
 
 CreateForm.propTypes = {
   created: PropTypes.object,
@@ -98,6 +99,7 @@ const initialFormData = {
     type: 'file',
     label: 'Images Products',
     value: [],
+    originValue: [],
     error: '',
     validate: {},
     allowMultiple: true,
@@ -144,6 +146,8 @@ function CreateForm(props) {
       Array.from(['thumbnail', 'images']).map(
         (key) => (_formData[key] = { ..._formData[key], value: created[key] }),
       )
+
+      _formData.images.originValue = _formData.images.value
     }
 
     setFormData(_formData)
@@ -154,6 +158,24 @@ function CreateForm(props) {
     Array.from(['thumbnail', 'images']).forEach((key) => (_formData[key] = formData[key]))
 
     _formData[name] = { ..._formData[name], value, error: '' }
+
+    setFormData(_formData)
+  }
+
+  const handleRemoveThumbnail = () => {
+    let _formData = JSON.parse(JSON.stringify(formData))
+
+    _formData.thumbnail.value = ''
+
+    setFormData(_formData)
+  }
+
+  const handleRemoveImages = (idx) => {
+    let _formData = JSON.parse(JSON.stringify(formData))
+
+    _formData.images.originValue.splice(idx, 1)
+
+    console.log('_formData', _formData)
 
     setFormData(_formData)
   }
@@ -172,9 +194,10 @@ function CreateForm(props) {
           handle: data.title.value,
           price: +data.price.value,
           thumbnail: data.thumbnail.value,
-          images: data.images.value || [],
+          images: data.images.value,
           status: data.status.value || 'ACTIVE',
           vendorId: data.vendorId.value,
+          originImages: data.images.originValue,
         }
 
         onSubmit(mapData)
@@ -242,6 +265,38 @@ function CreateForm(props) {
                 </Stack.Item>
               </Stack>
             </Stack.Item>
+
+            {created.id && (
+              <Stack.Item>
+                <Stack>
+                  <Stack.Item fill>
+                    {formData.thumbnail.value && (
+                      <div className="image-pos">
+                        <img src={formData.thumbnail.value} alt="" />
+                        <div className="icon-cancel" onClick={handleRemoveThumbnail}>
+                          <Icon source={CircleCancelMajor} color="base" />
+                        </div>
+                      </div>
+                    )}
+
+                    {!formData.thumbnail.value && <span>No image</span>}
+                  </Stack.Item>
+
+                  <Stack.Item fill>
+                    {formData.images.originValue.map((image, index) => (
+                      <div className="image-pos" key={index}>
+                        <img src={image} alt="" />
+                        <div className="icon-cancel" onClick={() => handleRemoveImages(index)}>
+                          <Icon source={CircleCancelMajor} color="base" />
+                        </div>
+                      </div>
+                    ))}
+
+                    {formData.images.originValue.length < 1 && <span>No Images</span>}
+                  </Stack.Item>
+                </Stack>
+              </Stack.Item>
+            )}
 
             <Stack.Item>
               <Stack>

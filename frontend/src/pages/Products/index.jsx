@@ -12,13 +12,14 @@ import uploadApi from '../../api/uploadApi'
 import ProductFilterList from './ProductFilterList'
 import queryString from 'query-string'
 import ProductSearch from './ProductSearch'
+import './style.css'
+import TableClone from './TableClone'
 
 function ProductsPage(props) {
   // Todo:  state
   const [searchParams, setSearchParams] = useSearchParams()
   const location = useLocation()
   const queryParams = queryString.parse(location.search)
-  console.log('queryParams', queryParams)
   const [productList, setProductList] = useState([])
   const [created, setCreated] = useState(null)
   const [vendor, setVendor] = useState(null)
@@ -101,9 +102,33 @@ function ProductsPage(props) {
       let res = null
       if (created?.id) {
         // mode update
+        if (typeof formData.thumbnail !== 'string') {
+          let response = await uploadApi.upload(formData.thumbnail)
+
+          formData.thumbnail = response.data.images[0]
+        }
+
+        if (formData.images.length > 0) {
+          let response = await uploadApi.upload(formData.images)
+
+          formData.images = [...formData.originImages, ...response.data.images]
+        } else {
+          formData.images = [...formData.originImages]
+        }
+
+        delete formData.originImages
+
         res = await productApi.update(created.id, formData)
+
+        // set page 1 if edit product success
+        setPagination((prevState) => ({
+          ...prevState,
+          page: 1,
+        }))
       } else {
         // mode create
+        delete formData.originImages
+
         if (formData.images?.length > 0) {
           let response = await uploadApi.upload(formData.images)
 
@@ -195,6 +220,13 @@ function ProductsPage(props) {
                     onEdit={(item) => setCreated(item)}
                     onDelete={(item) => setDeleted(item)}
                   />
+
+                  {/* <TableClone
+                    {...props}
+                    productList={productList}
+                    onEdit={(item) => setCreated(item)}
+                    onDelete={(item) => setDeleted(item)}
+                  /> */}
                 </Stack.Item>
 
                 <Stack.Item>

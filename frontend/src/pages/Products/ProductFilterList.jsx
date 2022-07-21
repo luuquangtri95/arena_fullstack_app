@@ -1,8 +1,8 @@
+import { Card, Stack } from '@shopify/polaris'
 import React from 'react'
-import { Stack } from '@shopify/polaris'
+import FilterByRangePrice from './filterList/FilterByRangePrice'
 import FilterByStatus from './filterList/FilterByStatus'
 import FilterByVendor from './filterList/FilterByVendor'
-import FilterByRangePrice from './filterList/FilterByRangePrice'
 
 function ProductFilterList({ filters = {}, onChange = null }) {
   const handleFilterChange = (values) => {
@@ -15,11 +15,13 @@ function ProductFilterList({ filters = {}, onChange = null }) {
   }
 
   return (
-    <Stack>
-      <FilterByStatus filters={filters} onChange={handleFilterChange} />
-      <FilterByVendor filters={filters} onChange={handleFilterChange} />
-      <FilterByRangePrice onChange={handleFilterChange} />
-    </Stack>
+    <Card>
+      <Stack>
+        <FilterByStatus filters={filters} onChange={handleFilterChange} />
+        <FilterByVendor filters={filters} onChange={handleFilterChange} />
+        <FilterByRangePrice onChange={handleFilterChange} />
+      </Stack>
+    </Card>
   )
 }
 

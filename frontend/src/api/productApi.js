@@ -21,23 +21,8 @@ const productApi = {
   },
 
   update(id, data) {
-    const formData = new FormData()
-    Object.keys(data)
-      .filter((name) => !['images', 'thumbnail'].includes(name))
-      .forEach((name) => formData.append(name, data[name]))
-
-    if (data.images?.length) {
-      data.images.forEach((item) => formData.append('images', item))
-    }
-
-    formData.append('thumbnail', data.thumbnail)
-
     const url = `/api/products/${id}`
-    return axiosClient.put(url, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+    return axiosClient.put(url, data)
   },
 
   _delete(id) {

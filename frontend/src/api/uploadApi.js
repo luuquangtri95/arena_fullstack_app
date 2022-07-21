@@ -2,7 +2,6 @@ import axiosClient from '../helpers/axiosClient.js'
 
 const uploadApi = {
   upload(data) {
-    console.log('data :>> ', data)
     const formData = new FormData()
     const url = '/api/upload'
 

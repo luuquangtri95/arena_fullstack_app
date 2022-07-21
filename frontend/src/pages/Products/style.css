@@ -1,0 +1,21 @@
+img {
+  max-width: 100%;
+  display: block;
+
+}
+
+.image-pos {
+  width: 100px;
+  height: 100px;
+}
+
+.image-pos {
+  position: relative;
+  border: 1px solid #eee;
+}
+
+.icon-cancel {
+  position: absolute;
+  top: -10px;
+  left: 90%;
+}
