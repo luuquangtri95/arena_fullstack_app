@@ -53,7 +53,6 @@ export default {
         }
       }
 
-      console.log('_where', _where)
       if (Object.keys(rest).length > 0) {
         count = await Model.count({
           where: _where,
@@ -131,6 +130,7 @@ export default {
       if (!entry) {
         throw new Error('Not found')
       }
+
       await Model.update(dataMappingHandleField, {
         where: { id },
         returning: true,

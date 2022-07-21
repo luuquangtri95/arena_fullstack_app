@@ -8,7 +8,7 @@ const schema = {
   price: Joi.number().required(),
   publish: Joi.boolean(),
   status: Joi.any(),
-  thumbnail: Joi.string(),
+  thumbnail: Joi.any(),
   images: Joi.any(),
   vendorId: Joi.number(),
 }
@@ -55,6 +55,7 @@ export default {
   update: async (req, res, next) => {
     try {
       await updateSchema.validateAsync(req.body)
+
       next()
     } catch (error) {
       return ResponseHandler.error(res, error)

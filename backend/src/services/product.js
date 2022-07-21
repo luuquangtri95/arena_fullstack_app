@@ -50,30 +50,8 @@ export default {
 
   update: async (req) => {
     try {
-      const { id } = req.params
-      const data = { ...req.body }
-
-      if (typeof data.images === 'string') {
-        data.images = [data.images]
-      }
-
-      if (req.files.thumbnail) {
-        // upload to cloudinary
-        let file = await CloudinaryUploader.upload(req.files.thumbnail[0])
-
-        data.thumbnail = file.secure_url
-      }
-
-      if (req.files.images) {
-        // upload to cloudinary
-        let files = []
-        for (let i = 0; i < req.files.images.length; i++) {
-          let file = await CloudinaryUploader.upload(req.files.images[i])
-          files.push(file)
-        }
-
-        data.images = files.map((item) => item.secure_url)
-      }
+      let data = { ...req.body }
+      let { id } = req.params
 
       return await Repository.update(id, data)
     } catch (error) {
